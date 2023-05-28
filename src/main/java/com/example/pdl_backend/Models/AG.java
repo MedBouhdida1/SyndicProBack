@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "ag")
 @AllArgsConstructor
@@ -17,10 +19,27 @@ public class AG {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    private String objet;
+
+    @Temporal(TemporalType.DATE)
+    private Date date;
+
+    private String heure;
+
+    private String duration;
+
+    private String location;
+
     @ManyToOne
     @JoinColumn(name = "president_syndic_id")
-    @JsonIgnoreProperties("AGs")
+    @JsonIgnoreProperties("ags")
     private PresidentSyndic presidentSyndic;
+
+
+    @OneToOne(mappedBy = "ag",cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("ag")
+    private PV pv;
+
 
 
 }

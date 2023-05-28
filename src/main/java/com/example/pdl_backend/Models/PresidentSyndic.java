@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -18,23 +19,33 @@ public class PresidentSyndic {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private String firstName;
+
+    private String lastName;
 
     private String email;
 
+    private String address;
+
     private String password;
 
+    private Long phone;
+
+    @Temporal(TemporalType.DATE)
+    private Date electionDate;
+
+
+
 
     @OneToMany(mappedBy = "presidentSyndic",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<PV> PVs = new ArrayList<>();
-
-
-    @OneToMany(mappedBy = "presidentSyndic",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<AG> AGs = new ArrayList<>();
+    private List<AG> ags = new ArrayList<>();
 
 
     @OneToMany(mappedBy = "presidentSyndic",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<Syndic> syndics = new ArrayList<>();
+
+    @OneToMany(mappedBy = "presidentSyndic",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<Resident> residents = new ArrayList<>();
 
 
 }

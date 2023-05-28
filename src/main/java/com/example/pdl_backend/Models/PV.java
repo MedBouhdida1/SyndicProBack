@@ -17,10 +17,14 @@ public class PV {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "president_syndic_id")
-    @JsonIgnoreProperties("PVs")
-    private PresidentSyndic presidentSyndic;
+    private String participantList;
+
+    private String content;
+
+
+
+    @OneToOne
+    private AG ag;
 
 
 }

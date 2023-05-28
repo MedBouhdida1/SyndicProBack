@@ -1,8 +1,10 @@
 package com.example.pdl_backend.Controllers;
 
 
+import com.example.pdl_backend.Models.AG;
 import com.example.pdl_backend.Models.PV;
 import com.example.pdl_backend.Models.PresidentSyndic;
+import com.example.pdl_backend.Repositories.AGRepository;
 import com.example.pdl_backend.Repositories.PVRepository;
 import com.example.pdl_backend.Repositories.PresidentSyndicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,7 @@ public class PVController {
     private PVRepository pvRepository;
 
     @Autowired
-    private PresidentSyndicRepository presidentSyndicRepository;
+    private AGRepository agRepository;
 
     @GetMapping
     private List<PV> ListPV(){
@@ -33,8 +35,8 @@ public class PVController {
 
     @PostMapping(value = "{id}")
     private PV addPv(@RequestBody PV pv, @PathVariable Long id){
-        PresidentSyndic presidentSyndic=presidentSyndicRepository.findById(id).orElse(null);
-        pv.setPresidentSyndic(presidentSyndic);
+        AG ag=agRepository.findById(id).orElse(null);
+        pv.setAg(ag);
         pvRepository.save(pv);
         return pv;
     }

@@ -4,4 +4,9 @@ import com.example.pdl_backend.Models.Syndic;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SyndicRepository extends JpaRepository<Syndic, Long> {
+
+
+    boolean existsByEmail(String email);
+
+    Syndic findByEmail(String email);
 }
