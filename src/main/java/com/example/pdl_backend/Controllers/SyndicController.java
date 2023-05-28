@@ -6,12 +6,17 @@ import com.example.pdl_backend.Models.PresidentSyndic;
 import com.example.pdl_backend.Models.Syndic;
 import com.example.pdl_backend.Repositories.PresidentSyndicRepository;
 import com.example.pdl_backend.Repositories.SyndicRepository;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -23,15 +28,56 @@ public class SyndicController {
 
     @Autowired
     private PresidentSyndicRepository presidentSyndicRepository;
+    private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
 
-    @PostMapping(value = "{id}")
-    private Syndic addSyndic(@RequestBody Syndic syndic, @PathVariable Long id){
+    @PostMapping(value = "register/{id}")
+    private ResponseEntity<?>  addSyndic(@RequestBody Syndic syndic, @PathVariable Long id){
+        if(syndicRepository.existsByEmail(syndic.getEmail())){
+            return new ResponseEntity<Void>(HttpStatus.FOUND);
+        }
+        syndic.setPassword(this.bCryptPasswordEncoder.encode(syndic.getPassword()));
         PresidentSyndic presidentSyndic=presidentSyndicRepository.findById(id).orElse(null);
         syndic.setPresidentSyndic(presidentSyndic);
         syndicRepository.save(syndic);
-        return syndic;
+        return ResponseEntity.status(HttpStatus.CREATED).body(syndic);
     }
+
+    @PostMapping(path = "login")
+    public ResponseEntity<Map<String, Object>> loginUser(@RequestBody Syndic syndic) {
+
+        HashMap<String, Object> response = new HashMap<>();
+
+        Syndic syndicFromDB = syndicRepository.findByEmail(syndic.getEmail());
+
+        if (syndicFromDB == null) {
+            response.put("message", "user not found !");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+        else {
+
+            Boolean compare = this.bCryptPasswordEncoder.matches(syndic.getPassword(), syndicFromDB.getPassword());
+
+            if (!compare) {
+                response.put("message", "Wrong password !");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+            else {
+                String token = Jwts.builder()
+                        .claim("data", syndicFromDB.getId())
+                        .claim("role","syndic")
+                        .signWith(SignatureAlgorithm.HS256, "SECRET")
+                        .compact();
+                response.put("token", token);
+                return ResponseEntity.status(HttpStatus.OK).body(response);
+            }
+        }
+
+    }
+
+
+
+
 
     @GetMapping
     private List<Syndic> listSyndic(){
@@ -45,13 +91,13 @@ public class SyndicController {
 
 
     @DeleteMapping(value = "{id}")
-    private void deletePV(@PathVariable Long id){
+    private void deleteSyndic(@PathVariable Long id){
         syndicRepository.deleteById(id);
     }
 
 
     @PutMapping(value = "{id}")
-    private ResponseEntity<?> updatePV(@PathVariable Long id, @RequestBody Syndic syndic){
+    private ResponseEntity<?> updateSyndic(@PathVariable Long id, @RequestBody Syndic syndic){
         if(!syndicRepository.existsById(id)){
             return new ResponseEntity<Void>(HttpStatus.FOUND);
         }

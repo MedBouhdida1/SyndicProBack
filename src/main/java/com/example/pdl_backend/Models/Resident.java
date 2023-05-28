@@ -6,16 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 @Entity
-@Table(name = "syndic")
+@Table(name = "resident")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class Syndic {
+@AllArgsConstructor
+public class Resident {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -33,19 +29,16 @@ public class Syndic {
 
     private Long phone;
 
-    private float solde;
-
-    @Temporal(TemporalType.DATE)
-    private Date electionDate;
-
     @ManyToOne
     @JoinColumn(name = "president_syndic_id")
     @JsonIgnoreProperties({"residents", "ags","syndics"})
+
     private PresidentSyndic presidentSyndic;
 
-
-    @OneToMany(mappedBy = "syndic",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<Resident> residents = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "syndic_id")
+    @JsonIgnoreProperties("residents")
+    private Syndic syndic;
 
 
 }
