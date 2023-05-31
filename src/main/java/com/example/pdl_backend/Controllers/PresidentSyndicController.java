@@ -19,7 +19,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/presidentsyndic")
-
+@CrossOrigin("*")
 public class PresidentSyndicController {
 
     @Autowired

@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/resident")
-
+@CrossOrigin("*")
 public class ResidentController {
 
     @Autowired
