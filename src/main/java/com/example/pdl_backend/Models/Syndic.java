@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
+
 import java.util.List;
 
 @Entity
@@ -47,6 +47,9 @@ public class Syndic {
 
     @OneToMany(mappedBy = "syndic",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<Resident> residents = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "syndic",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<Notification> notifications = new ArrayList<>();
 
 
 }

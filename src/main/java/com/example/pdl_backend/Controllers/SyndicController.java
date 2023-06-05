@@ -101,12 +101,15 @@ public class SyndicController {
     }
 
 
+    
+
     @PutMapping(value = "{id}")
     private ResponseEntity<?> updateSyndic(@PathVariable Long id, @RequestBody Syndic syndic){
         if(!syndicRepository.existsById(id)){
             return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
         }
         syndic.setId(id);
+  
         syndicRepository.save(syndic);
         return ResponseEntity.status(HttpStatus.OK).body(syndic);
     }
