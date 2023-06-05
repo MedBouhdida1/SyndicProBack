@@ -48,4 +48,8 @@ public class Syndic {
     private List<Resident> residents = new ArrayList<>();
 
 
+    @OneToMany(mappedBy = "syndic",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<Facture> factures = new ArrayList<>();
+
+
 }
