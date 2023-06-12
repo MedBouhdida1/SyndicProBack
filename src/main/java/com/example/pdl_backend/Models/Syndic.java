@@ -55,4 +55,8 @@ public class Syndic {
     private List<Depense> depense = new ArrayList<>();
 
 
+    @OneToMany(mappedBy = "syndic",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<Facture> factures = new ArrayList<>();
+
+
 }

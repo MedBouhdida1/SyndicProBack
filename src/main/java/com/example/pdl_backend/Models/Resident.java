@@ -9,6 +9,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "resident")
 @Data
@@ -30,7 +33,7 @@ public class Resident {
 
     private String password;
 
-    private Long phone;
+    private String phone;
 
     @ManyToOne
     @JoinColumn(name = "president_syndic_id")
@@ -45,6 +48,10 @@ public class Resident {
 
     @OneToMany(mappedBy = "resident",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<Reclamation> depense = new ArrayList<>();
+
+
+    @OneToMany(mappedBy = "resident",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<Facture> factures = new ArrayList<>();
 
 
 }

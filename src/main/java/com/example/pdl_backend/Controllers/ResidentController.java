@@ -25,14 +25,14 @@ public class ResidentController {
     @Autowired
     private PresidentSyndicRepository presidentSyndicRepository;
 
-    @PostMapping(value = "register/{id}")
-    private ResponseEntity<?> addResident(@RequestBody Resident resident, @PathVariable Long id){
+    @PostMapping(value = "register")
+    private ResponseEntity<?> addResident(@RequestBody Resident resident){
         if(residentRepository.existsByEmail(resident.getEmail())){
             return new ResponseEntity<Void>(HttpStatus.FOUND);
         }
         resident.setPassword(this.bCryptPasswordEncoder.encode(resident.getPassword()));
-        PresidentSyndic presidentSyndic=presidentSyndicRepository.findById(id).orElse(null);
-        resident.setPresidentSyndic(presidentSyndic);
+//        PresidentSyndic presidentSyndic=presidentSyndicRepository.findById(id).orElse(null);
+//        resident.setPresidentSyndic(presidentSyndic);
         residentRepository.save(resident);
         return ResponseEntity.status(HttpStatus.CREATED).body(resident);
     }
@@ -76,6 +76,9 @@ public class ResidentController {
         }else{
             return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
         }  
-         
+    }
+    @GetMapping(value="getresidentsbysyndic/{id}")
+    private List<Resident>Residents(@PathVariable Long id){
+        return residentRepository.findBySyndicId(id);
     }
 }
