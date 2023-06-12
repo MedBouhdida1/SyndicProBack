@@ -35,13 +35,16 @@ public class NotificationController {
         return notification;
     }
 
-    @GetMapping(value = "{id}")
-    private Optional<Notification> getNotificationById(@PathVariable Long id){
-        return notificationRepository.findById(id);
-    }
+  
 
     @DeleteMapping(value = "{id}")
     private void deleteNotification(@PathVariable Long id){
         notificationRepository.deleteById(id);
+    }
+
+     @GetMapping(value = "{id}")
+    private List<Notification> getNotificationBySyndic(@PathVariable Long id){
+        Optional<Syndic> synd = syndicRepository.findById(id);
+        return notificationRepository.findBySyndic(synd.get()) ;
     }
 }
