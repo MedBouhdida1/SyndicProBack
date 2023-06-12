@@ -3,8 +3,10 @@ package com.example.pdl_backend.Controllers;
 
 
 import com.example.pdl_backend.Models.PresidentSyndic;
+import com.example.pdl_backend.Models.Resident;
 import com.example.pdl_backend.Models.Syndic;
 import com.example.pdl_backend.Repositories.PresidentSyndicRepository;
+import com.example.pdl_backend.Repositories.ResidentRepository;
 import com.example.pdl_backend.Repositories.SyndicRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -21,11 +23,14 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/syndic")
+@CrossOrigin(origins = {"http://localhost:3000"})
 public class SyndicController {
 
     @Autowired
     private SyndicRepository syndicRepository;
-
+    @Autowired
+    private ResidentRepository residentRepository;
+    
     @Autowired
     private PresidentSyndicRepository presidentSyndicRepository;
     private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
@@ -96,14 +101,35 @@ public class SyndicController {
     }
 
 
+    
+
     @PutMapping(value = "{id}")
     private ResponseEntity<?> updateSyndic(@PathVariable Long id, @RequestBody Syndic syndic){
         if(!syndicRepository.existsById(id)){
-            return new ResponseEntity<Void>(HttpStatus.FOUND);
+            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
         }
         syndic.setId(id);
+  
         syndicRepository.save(syndic);
         return ResponseEntity.status(HttpStatus.OK).body(syndic);
+    }
+    @PutMapping(value = "residents/{id}")
+    private ResponseEntity<?> assignResident(@PathVariable Long id, @RequestBody List<Long> residents){
+       
+        Optional<Syndic> syndicOptional = syndicRepository.findById(id);
+        if(syndicOptional.isPresent()){
+            Syndic syndic = syndicOptional.get();
+            List<Resident> residentToAssign = residentRepository.findAllById(residents);
+            for (Resident resident : residentToAssign) {
+                resident.setSyndic(syndic);
+            }
+            
+            residentRepository.saveAll(residentToAssign);
+            return ResponseEntity.status(HttpStatus.OK).body(syndic);
+        }else{
+            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+        }
+       
     }
 
 }

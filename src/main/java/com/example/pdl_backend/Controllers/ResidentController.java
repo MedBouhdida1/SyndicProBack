@@ -65,6 +65,18 @@ public class ResidentController {
         return ResponseEntity.status(HttpStatus.OK).body(resident);
     }
 
+    @PutMapping(value = "revoke/{id}")
+    private ResponseEntity<?> revokeResident(@PathVariable Long id){
+        Optional<Resident> residentOptional = residentRepository.findById(id);
+        if(residentOptional.isPresent()){
+            Resident res = residentOptional.get();
+            res.setSyndic(null);
+            residentRepository.save(res);
+            return ResponseEntity.status(HttpStatus.OK).body(res);
+        }else{
+            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+        }  
+    }
     @GetMapping(value="getresidentsbysyndic/{id}")
     private List<Resident>Residents(@PathVariable Long id){
         return residentRepository.findBySyndicId(id);

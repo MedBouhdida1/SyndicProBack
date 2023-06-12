@@ -1,5 +1,8 @@
 package com.example.pdl_backend.Models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -42,6 +45,9 @@ public class Resident {
     @JoinColumn(name = "syndic_id")
     @JsonIgnoreProperties("residents")
     private Syndic syndic;
+
+    @OneToMany(mappedBy = "resident",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<Reclamation> depense = new ArrayList<>();
 
 
     @OneToMany(mappedBy = "resident",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
