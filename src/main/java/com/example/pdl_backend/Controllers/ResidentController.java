@@ -5,13 +5,17 @@ import com.example.pdl_backend.Models.PresidentSyndic;
 import com.example.pdl_backend.Models.Resident;
 import com.example.pdl_backend.Repositories.PresidentSyndicRepository;
 import com.example.pdl_backend.Repositories.ResidentRepository;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -80,5 +84,33 @@ public class ResidentController {
     @GetMapping(value="getresidentsbysyndic/{id}")
     private List<Resident>Residents(@PathVariable Long id){
         return residentRepository.findBySyndicId(id);
+    }
+
+    @PostMapping(path = "login")
+    public ResponseEntity<Map<String, Object>> loginUser(@RequestBody Resident resident) {
+
+        HashMap<String, Object> response = new HashMap<>();
+
+        Resident residentFromDB = residentRepository.findByEmail(resident.getEmail());
+
+        if (residentFromDB == null) {
+            response.put("message", "user not found !");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        } else {
+
+            Boolean compare = this.bCryptPasswordEncoder.matches(resident.getPassword(), residentFromDB.getPassword());
+
+            if (!compare) {
+                response.put("message", "Wrong password !");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            } else {
+                String token = Jwts.builder()
+                        .claim("data", residentFromDB.getId())
+                        .signWith(SignatureAlgorithm.HS256, "SECRET")
+                        .compact();
+                response.put("token", token);
+                return ResponseEntity.status(HttpStatus.OK).body(response);
+            }
+        }
     }
 }
