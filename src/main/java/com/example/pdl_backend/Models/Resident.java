@@ -54,4 +54,7 @@ public class Resident {
     private List<Facture> factures = new ArrayList<>();
 
 
+    @OneToMany(mappedBy = "resident",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<Reclamation> reclamation = new ArrayList<>();
+
 }

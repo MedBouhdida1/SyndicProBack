@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/pv")
-
+@CrossOrigin("*")
 public class PVController {
 
 

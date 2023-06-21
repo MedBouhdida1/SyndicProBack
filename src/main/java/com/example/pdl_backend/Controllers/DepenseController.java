@@ -37,8 +37,8 @@ public class DepenseController {
     @PostMapping(value = "{id}")
     private Depense addDepense(@RequestBody Depense depense, @PathVariable Long id){
         Syndic syndic=syndicRepository.findById(id).orElse(null);
-        depense.setSyndic(syndic); 
-  
+        depense.setSyndic(syndic);
+        depense.setDate(LocalDate.now());
         depenseRepository.save(depense);
         return depense;
     }

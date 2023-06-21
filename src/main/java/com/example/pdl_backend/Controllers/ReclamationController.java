@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.pdl_backend.Models.Resident;
+import com.example.pdl_backend.Repositories.ResidentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,8 +29,11 @@ public class ReclamationController {
      @Autowired
     private ReclamationRepository reclamationRepository;
 
+
     @Autowired
     private SyndicRepository syndicRepository;
+    @Autowired
+    private ResidentRepository residentRepository;
 
     @GetMapping
     private List<Reclamation> ListAG(){
@@ -37,8 +42,10 @@ public class ReclamationController {
 
     @PostMapping(value = "{id}")
     private Reclamation addReclamation(@RequestBody Reclamation reclamation, @PathVariable Long id){
-        Syndic syndic=syndicRepository.findById(id).orElse(null);
-        reclamation.setSyndic(syndic); 
+        Resident res=residentRepository.findById(id).orElse(null);
+        reclamation.setStatus("Pending");
+        reclamation.setResident(res);
+        reclamation.setSyndic(res.getSyndic());
         reclamation.setDate(LocalDate.now());
         reclamationRepository.save(reclamation);
         return reclamation;

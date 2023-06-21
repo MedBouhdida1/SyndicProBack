@@ -29,7 +29,9 @@ public class Reclamation {
 
     private String objet;
 
-    private boolean status;
+    private String description;
+
+    private String status;
 
     private LocalDate date;
 
