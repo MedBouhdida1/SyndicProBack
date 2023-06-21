@@ -32,6 +32,9 @@ public class Depense {
     private String objet;
 
     private boolean status;
+
+    private String description;
+
     private Long amount;
 
     private LocalDate date;

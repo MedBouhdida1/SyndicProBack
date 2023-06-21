@@ -31,6 +31,7 @@ public class Notification {
     private String title;
 
     private String description;
+
     private LocalDateTime createdAt;
 
     @ManyToOne
